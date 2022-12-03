@@ -1,10 +1,22 @@
 /////////////////////////////////////////////
 // https://adventofcode.com/2022/day/1/input
 
-$0.textContent.split('\n\n').map(x => x.split('\n').reduce((acc, total) => Number(total)+Number(acc), 0)).map((x, i) => ({num: i+1, val: x})).sort((a, b) => b.val-a.val)
+$0.textContent.split('\n\n')
+    .map(x => x.split('\n').reduce((acc, total) => Number(total)+Number(acc), 0))
+    .sort((a, b) => b-a)[0]
+
+// > 69289
 
 /////////
 // step2
+
+$0.textContent.split('\n\n')
+    .map(x => x.split('\n').reduce((acc, total) => Number(total)+Number(acc), 0))
+    .sort((a, b) => b-a)
+    .slice(0, 3)
+    .reduce((acc, x) => acc+x, 0)
+
+// > 205615
 
 /////////////////////////////////////////////
 // https://adventofcode.com/2022/day/2/input
@@ -28,6 +40,8 @@ $0.textContent.split('\n').filter(x => x !== '').map(x => x.split(' ')).map(x =>
     
     return ptsForChoice + ptsForVictory;
 }).reduce((acc, x) => (acc + x), 0)
+
+// > 13675
 
 /////////
 // step2
@@ -53,6 +67,8 @@ $0.textContent.split('\n').filter(x => x !== '').map(x => x.split(' ')).map(x =>
     return ptsForChoice + ptsForVictory;
 }).reduce((acc, x) => (acc + x), 0)
 
+// > 14184
+
 /////////////////////////////////////////////
 // https://adventofcode.com/2022/day/3/input
 
@@ -68,10 +84,14 @@ $0.textContent.split('\n').filter(x => x !== '')
     })
     .reduce((acc, x) => acc+x, 0);
 
+// > 8153
+
 /////////
 // step2
 
 
+
+// > 
 
 /////////////////////////////////////////////
 // https://adventofcode.com/2022/day/4/input
