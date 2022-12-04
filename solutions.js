@@ -24,7 +24,6 @@ $0.textContent.split('\n\n')
 $0.textContent.split('\n').filter(x => x !== '').map(x => x.split(' ')).map(x => {
     const other = x[0] === 'A' ? 'pierre' : (x[0] === 'B' ? 'papier' : 'ciseau');
     const me = x[1] === 'X' ? 'pierre' : (x[1] === 'Y' ? 'papier' : 'ciseau');
-    
     const ptsForChoice = me === 'pierre' ? 1 : (me === 'papier' ? 2 : 3);
     
     let ptsForVictory;
@@ -49,7 +48,6 @@ $0.textContent.split('\n').filter(x => x !== '').map(x => x.split(' ')).map(x =>
 $0.textContent.split('\n').filter(x => x !== '').map(x => x.split(' ')).map(x => {
     const other = x[0] === 'A' ? 'pierre' : (x[0] === 'B' ? 'papier' : 'ciseau');
     const wantedResult = x[1] === 'X' ? 'defaite' : (x[1] === 'Y' ? 'nul' : 'victoire');
-
     const ptsForVictory = wantedResult === 'defaite' ? 0 : (wantedResult === 'nul' ? 3 : 6);
     
     let me;
