@@ -120,19 +120,8 @@ $0.textContent.split('\n').filter(x => x !== '')
 
 $0.textContent.split('\n').filter(x => x !== '')
     .map(x => x.split(','))
-    .map(x => ({a: x[0].split('-').map(Number), b: x[1].split('-').map(Number), src: x.join(' , ')}))
-    .map(({a, b, src}) => {
-        const getSuite = (start, end) => {
-            let suite = String(start);
-            while(start < end) { start++; suite += `_${start}`; }
-            return `_${suite}_`;
-        };
-        
-        const suiteA = getSuite(a[0], a[1]);
-        const suiteB = getSuite(b[0], b[1]);
-        return {suiteA, suiteB, src};
-    })
-    .filter(({suiteA, suiteB, src}) => suiteA.includes(suiteB) || suiteB.includes(suiteA))
+    .map(x => ({a: x[0].split('-').map(Number), b: x[1].split('-').map(Number)}))
+    .filter(({a, b}) => (a[0] <= b[0] && b[1] <= a[1]) || (b[0] <= a[0] && a[1] <= b[1]))
     .length
 
 // > 582
