@@ -21,49 +21,55 @@ $0.textContent.split('\n\n')
 /////////////////////////////////////////////
 // https://adventofcode.com/2022/day/2/input
 
-$0.textContent.split('\n').filter(x => x !== '').map(x => x.split(' ')).map(x => {
-    const other = x[0] === 'A' ? 'pierre' : (x[0] === 'B' ? 'papier' : 'ciseau');
-    const me = x[1] === 'X' ? 'pierre' : (x[1] === 'Y' ? 'papier' : 'ciseau');
-    const ptsForChoice = me === 'pierre' ? 1 : (me === 'papier' ? 2 : 3);
-    
-    let ptsForVictory;
-    if(me === other) { 
-        ptsForVictory = 3; 
-    } else if(me === 'pierre') {
-        ptsForVictory = (other === 'papier') ? 0 : 6;
-    } else if(me === 'papier') {
-        ptsForVictory = (other === 'pierre') ? 6 : 0;
-    } else if(me === 'ciseau') {
-        ptsForVictory = (other === 'pierre') ? 0 : 6;
-    }
-    
-    return ptsForChoice + ptsForVictory;
-}).reduce((acc, x) => (acc + x), 0)
+$0.textContent.split('\n').filter(x => x !== '')
+    .map(x => x.split(' '))
+    .map(x => {
+        const other = x[0] === 'A' ? 'pierre' : (x[0] === 'B' ? 'papier' : 'ciseau');
+        const me = x[1] === 'X' ? 'pierre' : (x[1] === 'Y' ? 'papier' : 'ciseau');
+        const ptsForChoice = me === 'pierre' ? 1 : (me === 'papier' ? 2 : 3);
+        
+        let ptsForVictory;
+        if(me === other) { 
+            ptsForVictory = 3; 
+        } else if(me === 'pierre') {
+            ptsForVictory = (other === 'papier') ? 0 : 6;
+        } else if(me === 'papier') {
+            ptsForVictory = (other === 'pierre') ? 6 : 0;
+        } else if(me === 'ciseau') {
+            ptsForVictory = (other === 'pierre') ? 0 : 6;
+        }
+        
+        return ptsForChoice + ptsForVictory;
+    })
+    .reduce((acc, x) => (acc + x), 0)
 
 // > 13675
 
 /////////
 // step2
 
-$0.textContent.split('\n').filter(x => x !== '').map(x => x.split(' ')).map(x => {
-    const other = x[0] === 'A' ? 'pierre' : (x[0] === 'B' ? 'papier' : 'ciseau');
-    const wantedResult = x[1] === 'X' ? 'defaite' : (x[1] === 'Y' ? 'nul' : 'victoire');
-    const ptsForVictory = wantedResult === 'defaite' ? 0 : (wantedResult === 'nul' ? 3 : 6);
-    
-    let me;
-    if(wantedResult === 'nul') { 
-        me = other; 
-    } else if(other === 'pierre') {
-        me = (wantedResult === 'victoire') ? 'papier' : 'ciseau';
-    } else if(other === 'papier') {
-        me = (wantedResult === 'victoire') ? 'ciseau' : 'pierre';
-    } else if(other === 'ciseau') {
-        me = (wantedResult === 'victoire') ? 'pierre' : 'papier';
-    }
-    const ptsForChoice = me === 'pierre' ? 1 : (me === 'papier' ? 2 : 3);
-    
-    return ptsForChoice + ptsForVictory;
-}).reduce((acc, x) => (acc + x), 0)
+$0.textContent.split('\n').filter(x => x !== '')
+    .map(x => x.split(' '))
+    .map(x => {
+        const other = x[0] === 'A' ? 'pierre' : (x[0] === 'B' ? 'papier' : 'ciseau');
+        const wantedResult = x[1] === 'X' ? 'defaite' : (x[1] === 'Y' ? 'nul' : 'victoire');
+        const ptsForVictory = wantedResult === 'defaite' ? 0 : (wantedResult === 'nul' ? 3 : 6);
+        
+        let me;
+        if(wantedResult === 'nul') { 
+            me = other; 
+        } else if(other === 'pierre') {
+            me = (wantedResult === 'victoire') ? 'papier' : 'ciseau';
+        } else if(other === 'papier') {
+            me = (wantedResult === 'victoire') ? 'ciseau' : 'pierre';
+        } else if(other === 'ciseau') {
+            me = (wantedResult === 'victoire') ? 'pierre' : 'papier';
+        }
+        const ptsForChoice = me === 'pierre' ? 1 : (me === 'papier' ? 2 : 3);
+        
+        return ptsForChoice + ptsForVictory;
+    })
+    .reduce((acc, x) => (acc + x), 0)
 
 // > 14184
 
