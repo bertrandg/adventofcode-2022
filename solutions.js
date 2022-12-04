@@ -121,7 +121,7 @@ $0.textContent.split('\n').filter(x => x !== '')
 $0.textContent.split('\n').filter(x => x !== '')
     .map(x => x.split(','))
     .map(x => ({a: x[0].split('-').map(Number), b: x[1].split('-').map(Number)}))
-    .filter(({a, b}) => (a[0] <= b[0] && b[1] <= a[1]) || (b[0] <= a[0] && a[1] <= b[1]))
+    .filter(({a: [s1, e1], b: [s2, e2]}) => (s1 <= s2 && e2 <= e1) || (s2 <= s1 && e1 <= e2))
     .length
 
 // > 582
@@ -129,4 +129,14 @@ $0.textContent.split('\n').filter(x => x !== '')
 /////////
 // step2
 
+$0.textContent.split('\n').filter(x => x !== '')
+    .map(x => x.split(','))
+    .map(x => ({a: x[0].split('-').map(Number), b: x[1].split('-').map(Number)}))
+    .filter(({a: [s1, e1], b: [s2, e2]}) => !(e1 < s2 || s1 > e2))
+    .length
+
+// > 893
+
+/////////////////////////////////////////////
+// https://adventofcode.com/2022/day/5/input
 
