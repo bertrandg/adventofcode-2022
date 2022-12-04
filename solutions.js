@@ -112,5 +112,26 @@ $0.textContent.split('\n').filter(x => x !== '')
 /////////////////////////////////////////////
 // https://adventofcode.com/2022/day/4/input
 
+$0.textContent.split('\n').filter(x => x !== '')
+    .map(x => x.split(','))
+    .map(x => ([x[0].split('-'), x[1].split('-')]))
+    .map(x => {
+        const getSuite = (start, end) => {
+            let suite = String(start);
+            while(start < end) { start++; suite += `-${start}`; }
+            return suite;
+        };
+        const suiteA = getSuite(Number(x[0][0]), Number(x[0][1]));
+        const suiteB = getSuite(Number(x[1][0]), Number(x[1][1]));
+
+        return suiteA.includes(suiteB) || suiteB.includes(suiteA);
+    })
+    .filter(x => x === true)
+    .length
+
+// > 602
+
+/////////
+// step2
 
 
