@@ -89,9 +89,27 @@ $0.textContent.split('\n').filter(x => x !== '')
 /////////
 // step2
 
+$0.textContent.split('\n').filter(x => x !== '')
+    .reduce((acc, item) => {
+        if(!acc[acc.length-1] || acc[acc.length-1].length >= 3) {
+            acc.push([item]);
+        } else {
+            acc[acc.length-1].push(item);
+        }
+        return acc;
+    }, [])
+    .map(x => {
+        const a = new Set(x[0]);
+        const b = new Set(x[1]);
+        const c = new Set(x[2]);
+        const getPrio = (x) => 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'.indexOf(x)+1;
 
+        const z = [...a].find(x => b.has(x) && c.has(x))
+        return getPrio(z);
+    })
+    .reduce((acc, x) => acc+x, 0);
 
-// > 
+// > 2342
 
 /////////////////////////////////////////////
 // https://adventofcode.com/2022/day/4/input
