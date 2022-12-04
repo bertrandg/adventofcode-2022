@@ -2,7 +2,7 @@
 // https://adventofcode.com/2022/day/1/input
 
 $0.textContent.split('\n\n')
-    .map(x => x.split('\n').reduce((acc, total) => Number(total)+Number(acc), 0))
+    .map(x => x.split('\n').reduce((acc, x) => acc+Number(x), 0))
     .sort((a, b) => b-a)[0]
 
 // > 69289
@@ -11,7 +11,7 @@ $0.textContent.split('\n\n')
 // step2
 
 $0.textContent.split('\n\n')
-    .map(x => x.split('\n').reduce((acc, total) => Number(total)+Number(acc), 0))
+    .map(x => x.split('\n').reduce((acc, x) => acc+Number(x), 0))
     .sort((a, b) => b-a)
     .slice(0, 3)
     .reduce((acc, x) => acc+x, 0)
@@ -114,16 +114,16 @@ $0.textContent.split('\n').filter(x => x !== '')
 
 $0.textContent.split('\n').filter(x => x !== '')
     .map(x => x.split(','))
-    .map(x => ([x[0].split('-'), x[1].split('-')]))
+    .map(x => ([x[0].split('-').map(Number), x[1].split('-').map(Number)]))
     .map(x => {
         const getSuite = (start, end) => {
             let suite = String(start);
             while(start < end) { start++; suite += `-${start}`; }
             return suite;
         };
-        const suiteA = getSuite(Number(x[0][0]), Number(x[0][1]));
-        const suiteB = getSuite(Number(x[1][0]), Number(x[1][1]));
-
+        const suiteA = getSuite(x[0][0], x[0][1]);
+        const suiteB = getSuite(x[1][0], x[1][1]);
+        
         return suiteA.includes(suiteB) || suiteB.includes(suiteA);
     })
     .filter(x => x === true)
