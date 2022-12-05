@@ -188,7 +188,49 @@ $0.textContent.split('\n').filter(x => x !== '')
 /////////
 // step2
 
+$0.textContent.split('\n').filter(x => x !== '')
+    .reduce((acc, line, index) => {
+        if(index <= 8) acc[0].push(line);
+        else           acc[1].push(line);
+        return acc;
+    }, [[], []])
+    .map((x, i) => {
+        if(i === 0) {
+            const harbor = x.pop().match(/.{1,4}/g).map(Number).reduce((acc, num) => {
+                acc[num] = {num, stacks: []};
+                return acc;
+            }, {});
+            x.forEach(line => {
+                const columns = line.match(/.{1,4}/g);
+                columns.forEach((column, index) => {
+                    if(column.trim() !== '') {
+                        harbor[index+1].stacks.push(column.trim().substr(1, 1));
+                    }
+                });
+            });
+            return harbor;
+        }
+        return x.map(y => {
+            const arr = y.split(' ');
+            return {nb: Number(arr[1]), from: Number(arr[3]), to: Number(arr[5])}
+        });
+    })
+    .reduce((acc, x, i) => {
+        if(i === 0) acc[0].harbor = x;
+        else        acc[0].process = x;
+        return acc;
+    }, [{}])
+    .map(x => {
+        x.process.forEach(({nb, from, to}) => {
+            const moved = x.harbor[from].stacks.slice(0, nb);
+            x.harbor[from].stacks = x.harbor[from].stacks.slice(nb);
+            x.harbor[to].stacks.unshift(...moved);
+        });
+        return x.harbor;
+    })
+    .map(x => Object.keys(x).map(y => x[y].stacks[0]).join(''))[0]
 
+// > 'JNRSCDWPP'
 
 
 
