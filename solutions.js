@@ -232,5 +232,53 @@ $0.textContent.split('\n').filter(x => x !== '')
 
 // > 'JNRSCDWPP'
 
+/////////////////////////////////////////////
+// https://adventofcode.com/2022/day/6/input
+
+$0.textContent.split('\n').filter(x => x !== '')
+    .map(x => {
+        const markerLength = 4;
+        let indexMarker;
+        for(let i = 0; i < x.length - markerLength; i++) {
+            const fourChars = x.substr(i, markerLength);
+            const isMarker = (new Set(fourChars)).size === markerLength;
+            if(isMarker) {
+                indexMarker = i + markerLength;
+                break;
+            }
+        }
+        return indexMarker;
+    })[0]
+
+// > 1566
+
+/////////
+// step2
+
+/////////////////////////////////////////////
+// https://adventofcode.com/2022/day/7/input
+
+/////////
+// step2
+
+/////////////////////////////////////////////
+// https://adventofcode.com/2022/day/8/input
+
+/////////
+// step2
+
+/////////////////////////////////////////////
+// https://adventofcode.com/2022/day/9/input
+
+/////////
+// step2
+
+/////////////////////////////////////////////
+// https://adventofcode.com/2022/day/10/input
+
+/////////
+// step2
+
+
 
 
