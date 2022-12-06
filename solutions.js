@@ -255,6 +255,23 @@ $0.textContent.split('\n').filter(x => x !== '')
 /////////
 // step2
 
+$0.textContent.split('\n').filter(x => x !== '')
+    .map(x => {
+        const markerLength = 14;
+        let indexMarker;
+        for(let i = 0; i < x.length - markerLength; i++) {
+            const fourChars = x.substr(i, markerLength);
+            const isMarker = (new Set(fourChars)).size === markerLength;
+            if(isMarker) {
+                indexMarker = i + markerLength;
+                break;
+            }
+        }
+        return indexMarker;
+    })[0]
+
+// > 2265
+
 /////////////////////////////////////////////
 // https://adventofcode.com/2022/day/7/input
 
