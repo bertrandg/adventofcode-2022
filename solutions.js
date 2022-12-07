@@ -275,6 +275,62 @@ $0.textContent.split('\n').filter(x => x !== '')
 /////////////////////////////////////////////
 // https://adventofcode.com/2022/day/7/input
 
+$0.textContent.split('\n').filter(x => x !== '')
+    .map(x => {
+        switch(true) {
+            case x.startsWith('$ cd '): return {type: 'cd', path: x.substr(5)};
+            case x.startsWith('$ ls'):  return {type: 'ls'};
+            case x.startsWith('dir '):  return {type: 'list', elem: 'dir', name: x.substr(4)};
+            default:                    return {type: 'list', elem: 'file', name: x.split(' ')[1], size: Number(x.split(' ')[0])};
+        }
+    })
+    .reduce((acc, line) => {
+        const latest = acc[acc.length - 1];
+
+        switch(true) {
+            case (line.type === 'ls'):                   acc.push({type: 'list', items: []}); break;
+            case (!latest || line.type !== latest.type): acc.push({type: line.type, items: [line]}); break;
+            default:                                     latest.items.push(line); break;
+        }
+        
+        return acc;
+    }, [])
+    .reduce((acc, cmds) => {
+        if(cmds.type === 'cd') {
+            cmds.items.forEach(line => {
+                switch(true) {
+                    case (line.path === '/'):  acc.currentPath = ''; break;
+                    case (line.path === '..'): acc.currentPath = acc.currentPath.split('/').splice(0, acc.currentPath.split('/').length - 1).join('/'); break;
+                    default:                   acc.currentPath += `/${line.path}`; break;
+                }
+            });
+        }
+        else if(cmds.type === 'list') {
+            cmds.items.forEach(line => {
+                if(line.elem === 'file') acc.files.push({folder: acc.currentPath, name: line.name, size: line.size});
+            });
+        }
+        
+        return acc;
+    }, {currentPath: '', files: []})
+    .files
+    .reduce((acc, file) => {
+        const folders = file.folder.split('/');
+        let path = '';
+        folders.forEach(x => {
+            path += (path === '/') ? x : `/${x}`;
+            acc[0].set(path, acc[0].has(path) ? (acc[0].get(path) + file.size) : file.size);
+        });
+        return acc;
+    }, [new Map()])
+    .map(x => {
+        return [...x].map(y => ({path: y[0], size: y[1]}))
+            .filter(y => y.size <= 100_000)
+            .reduce((acc, y) => acc+y.size, 0);
+    })[0]
+
+// > 1845346
+
 /////////
 // step2
 
