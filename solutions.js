@@ -286,13 +286,11 @@ $0.textContent.split('\n').filter(x => x !== '')
     })
     .reduce((acc, line) => {
         const latest = acc[acc.length - 1];
-
         switch(true) {
             case (line.type === 'ls'):                   acc.push({type: 'list', items: []}); break;
             case (!latest || line.type !== latest.type): acc.push({type: line.type, items: [line]}); break;
             default:                                     latest.items.push(line); break;
         }
-        
         return acc;
     }, [])
     .reduce((acc, cmds) => {
@@ -310,7 +308,6 @@ $0.textContent.split('\n').filter(x => x !== '')
                 if(line.elem === 'file') acc.files.push({folder: acc.currentPath, name: line.name, size: line.size});
             });
         }
-        
         return acc;
     }, {currentPath: '', files: []})
     .files
@@ -345,13 +342,11 @@ $0.textContent.split('\n').filter(x => x !== '')
     })
     .reduce((acc, line) => {
         const latest = acc[acc.length - 1];
-
         switch(true) {
             case (line.type === 'ls'):                   acc.push({type: 'list', items: []}); break;
             case (!latest || line.type !== latest.type): acc.push({type: line.type, items: [line]}); break;
             default:                                     latest.items.push(line); break;
         }
-        
         return acc;
     }, [])
     .reduce((acc, cmds) => {
@@ -369,7 +364,6 @@ $0.textContent.split('\n').filter(x => x !== '')
                 if(line.elem === 'file') acc.files.push({folder: acc.currentPath, name: line.name, size: line.size});
             });
         }
-        
         return acc;
     }, {currentPath: '', files: []})
     .files
@@ -382,19 +376,14 @@ $0.textContent.split('\n').filter(x => x !== '')
         });
         return acc;
     }, [new Map()])
-    .map(x => {
-        return [...x].map(y => ({path: y[0], size: y[1]}))
-            .sort((a,b) => b.size-a.size)
-    })
+    .map(x => [...x].map(y => ({path: y[0], size: y[1]})).sort((a ,b) => b.size - a.size))
     .map(x => {
         const maxSize = 70_000_000;
         const neededSize = 30_000_000;
         const usedSize = x[0].size;
         const freeSize = maxSize - usedSize;
         const missingSize = neededSize - freeSize;
-
-        const folderToDelete = x.findLast(y => y.size >= missingSize);
-        return folderToDelete.size;
+        return x.findLast(y => y.size >= missingSize).size;
     })[0]
 
 // > 3636703
