@@ -391,8 +391,90 @@ $0.textContent.split('\n').filter(x => x !== '')
 /////////////////////////////////////////////
 // https://adventofcode.com/2022/day/8/input
 
+$0.textContent.split('\n\n').filter(x => x !== '')
+    .map(x => {
+        const lines = x.split('\n');
+        const trees = [];
+
+        for(let iLine = 0; iLine < lines.length; iLine++) {
+            for(let iCol = 0; iCol < lines[iLine].length; iCol++) {
+                const isEdge = Boolean(iLine === 0 || iLine === lines.length - 1 || iCol === 0 || iCol === lines[iLine].length - 1);
+                trees.push({
+                    position:   {x: iCol, y: iLine},
+                    value:      Number(lines[iLine][iCol]),
+                    isEdge:     isEdge,
+                    env: isEdge || {
+                        left:   lines[iLine].substring(0, iCol),
+                        right:  lines[iLine].substring(iCol+1),
+                        top:    lines.slice(0, iLine).map(l => l[iCol]).join(''),
+                        bottom: lines.slice(iLine+1).map(l => l[iCol]).join(''),
+                    },
+                });
+            }
+        }
+
+        return trees;
+    })
+    .map(trees => {
+        const isVisible = (arr, v) => arr.split('').map(Number).every(x => x < v);
+        
+        return trees.filter(tree => tree.isEdge || isVisible(tree.env.left, tree.value) || isVisible(tree.env.right, tree.value) || isVisible(tree.env.top, tree.value) || isVisible(tree.env.bottom, tree.value));
+    })
+    [0].length
+
+// > 1763
+
 /////////
 // step2
+
+$0.textContent.split('\n\n').filter(x => x !== '')
+    .map(x => {
+        const lines = x.split('\n');
+        const trees = [];
+
+        for(let iLine = 0; iLine < lines.length; iLine++) {
+            for(let iCol = 0; iCol < lines[iLine].length; iCol++) {
+                const isEdgeLeft = Boolean(iCol === 0);
+                const isEdgeRight = Boolean(iCol === lines[iLine].length - 1);
+                const isEdgeTop = Boolean(iLine === 0);
+                const isEdgeBottom = Boolean(iLine === lines.length - 1);
+                trees.push({
+                    position:   {x: iCol, y: iLine},
+                    value:      Number(lines[iLine][iCol]),
+                    isEdge:     isEdgeLeft || isEdgeRight || isEdgeTop || isEdgeBottom,
+                    env: {
+                        left:   isEdgeLeft ?   '' : lines[iLine].substring(0, iCol).split('').reverse().join(''),
+                        right:  isEdgeRight ?  '' : lines[iLine].substring(iCol+1),
+                        top:    isEdgeTop ?    '' : lines.slice(0, iLine).map(l => l[iCol]).reverse().join(''),
+                        bottom: isEdgeBottom ? '' : lines.slice(iLine+1).map(l => l[iCol]).join(''),
+                    },
+                });
+            }
+        }
+
+        return trees;
+    })
+    .map(trees => {
+        const isVisible = (arr, v) => arr.split('').map(Number).every(x => x < v);
+        
+        return trees.filter(tree => tree.isEdge || isVisible(tree.env.left, tree.value) || isVisible(tree.env.right, tree.value) || isVisible(tree.env.top, tree.value) || isVisible(tree.env.bottom, tree.value));
+    })
+    .map(trees => {
+        const getScore = (tree) => {
+            const getDirScore = (str, max) => {
+                const arr = str.split('').map(Number);
+                const index = arr.findIndex((x, i) => x >= max || i === arr.length-1);
+                return arr.slice(0, index+1).length;
+            };
+            
+            return getDirScore(tree.env.top, tree.value) * getDirScore(tree.env.right, tree.value) * getDirScore(tree.env.bottom, tree.value) * getDirScore(tree.env.left, tree.value);
+        };
+
+        return trees.map(tree => ({...tree, score: getScore(tree)})).sort((a, b) => b.score - a.score);
+    })
+    [0][0].score
+
+// > 671160
 
 /////////////////////////////////////////////
 // https://adventofcode.com/2022/day/9/input
