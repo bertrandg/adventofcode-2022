@@ -482,45 +482,36 @@ $0.textContent.split('\n\n').filter(x => x !== '')
 $0.textContent.split('\n').filter(x => x !== '')
     .map(x => ({dir: x.split(' ')[0], moves: Number(x.split(' ')[1])}))
     .reduce((acc, item, index) => {
-        // inc initial position
         if(index === 0) {
-            acc.counter.add(`${acc.tail.y}-${acc.tail.x}`, true);
+            acc.counter.add(`${acc.tail.x}-${acc.tail.y}`, true);
         }
-
-        // Update head & tail positions
-        const head = {x: acc.head.x, y: acc.head.y};
-        const tail = {x: acc.tail.x, y: acc.tail.y};
         
         const isAdjacent = (a, b) => b.x >= a.x-1 && b.x <= a.x+1 && b.y >= a.y-1 && b.y <= a.y+1;
         
         for(let i = 0; i < item.moves; i++) {
             switch(item.dir) {
-                case 'U': head.y--; break;
-                case 'R': head.x++; break;
-                case 'D': head.y++; break;
-                case 'L': head.x--; break;
+                case 'U': acc.head.y--; break;
+                case 'R': acc.head.x++; break;
+                case 'D': acc.head.y++; break;
+                case 'L': acc.head.x--; break;
             }
-            if(!isAdjacent(head, tail)) {
+            if(!isAdjacent(acc.head, acc.tail)) {
                 switch(true) {
-                    case tail.x === head.x: // Same column
-                        tail.y = (tail.y > head.y) ? tail.y-1 : tail.y+1;
+                    case acc.tail.x === acc.head.x:
+                        acc.tail.y = (acc.tail.y > acc.head.y) ? acc.tail.y-1 : acc.tail.y+1;
                         break;
-                    case tail.y === head.y: // Same line
-                        tail.x = (tail.x > head.x) ? tail.x-1 : tail.x+1;
+                    case acc.tail.y === acc.head.y:
+                        acc.tail.x = (acc.tail.x > acc.head.x) ? acc.tail.x-1 : acc.tail.x+1;
                         break;
                     default:
-                        tail.x = (tail.x > head.x) ? tail.x-1 : tail.x+1;
-                        tail.y = (tail.y > head.y) ? tail.y-1 : tail.y+1;
+                        acc.tail.x = (acc.tail.x > acc.head.x) ? acc.tail.x-1 : acc.tail.x+1;
+                        acc.tail.y = (acc.tail.y > acc.head.y) ? acc.tail.y-1 : acc.tail.y+1;
                         break;
                 }
-                acc.counter.add(`${tail.y}-${tail.x}`, true);
+                acc.counter.add(`${acc.tail.x}-${acc.tail.y}`, true);
             }
         }
 
-        // Update data
-        acc.head = head;
-        acc.tail = tail;
-        
         return acc;
     }, {
         counter: new Set(),
@@ -533,6 +524,60 @@ $0.textContent.split('\n').filter(x => x !== '')
 
 /////////
 // step2
+
+$0.textContent.split('\n').filter(x => x !== '')
+    .map(x => ({dir: x.split(' ')[0], moves: Number(x.split(' ')[1])}))
+    .reduce((acc, item, index) => {
+        if(index === 0) {
+            acc.counter.add(`${acc.knots[acc.knots.length - 1].x}-${acc.knots[acc.knots.length - 1].y}`, true);
+        }
+        
+        const isAdjacent = (a, b) => b.x >= a.x-1 && b.x <= a.x+1 && b.y >= a.y-1 && b.y <= a.y+1;
+        
+        for(let i = 0; i < item.moves; i++) {
+            switch(item.dir) {
+                case 'U': acc.head.y--; break;
+                case 'R': acc.head.x++; break;
+                case 'D': acc.head.y++; break;
+                case 'L': acc.head.x--; break;
+            }
+
+            for(let j = 0; j < acc.knots.length; j++) {
+                const knot = acc.knots[j];
+                const prevKnot = (j === 0) ? acc.head : acc.knots[j-1];
+                const isTail = Boolean(j === acc.knots.length - 1);
+
+                if(!isAdjacent(prevKnot, knot)) {
+                    switch(true) {
+                        case knot.x === prevKnot.x:
+                            knot.y = (knot.y > prevKnot.y) ? knot.y-1 : knot.y+1;
+                            break;
+                        case knot.y === prevKnot.y:
+                            knot.x = (knot.x > prevKnot.x) ? knot.x-1 : knot.x+1;
+                            break;
+                        default:
+                            knot.x = (knot.x > prevKnot.x) ? knot.x-1 : knot.x+1;
+                            knot.y = (knot.y > prevKnot.y) ? knot.y-1 : knot.y+1;
+                            break;
+                    }
+                }
+
+                if(isTail) {
+                    acc.counter.add(`${knot.x}-${knot.y}`, true);
+                }
+            }
+            
+        }
+        
+        return acc;
+    }, {
+        counter: new Set(),
+        head: {x: 0, y: 4},
+        knots: Array.from('123456789').map(() => ({x: 0, y: 4})),
+    })
+    .counter.size
+
+// > 2467
 
 /////////////////////////////////////////////
 // https://adventofcode.com/2022/day/10/input
