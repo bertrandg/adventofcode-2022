@@ -11,6 +11,7 @@ https://adventofcode.com/2022
 - [day 6](solutions.js#L236)
 - [day 7](solutions.js#L276)
 - [day 8](solutions.js#L392)
+- [day 9](solutions.js#L480)
 
 
 ![browser-devtools-resolution](https://user-images.githubusercontent.com/7031941/205489407-0d60425c-379e-4bc1-9629-a558ffb6b9d7.png)
