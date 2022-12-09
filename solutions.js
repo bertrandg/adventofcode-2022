@@ -484,7 +484,7 @@ $0.textContent.split('\n').filter(x => x !== '')
     .reduce((acc, item, index) => {
         // inc initial position
         if(index === 0) {
-            acc.data.add(`${acc.tail.y}-${acc.tail.x}`, 1);
+            acc.counter.add(`${acc.tail.y}-${acc.tail.x}`, true);
         }
 
         // Update head & tail positions
@@ -513,7 +513,7 @@ $0.textContent.split('\n').filter(x => x !== '')
                         tail.y = (tail.y > head.y) ? tail.y-1 : tail.y+1;
                         break;
                 }
-                acc.data.add(`${tail.y}-${tail.x}`, 1);
+                acc.counter.add(`${tail.y}-${tail.x}`, true);
             }
         }
 
@@ -523,11 +523,11 @@ $0.textContent.split('\n').filter(x => x !== '')
         
         return acc;
     }, {
-        data: new Set(),
+        counter: new Set(),
         head: {x: 0, y: 4},
         tail: {x: 0, y: 4},
     })
-    .data.size
+    .counter.size
 
 // > 5874
 
