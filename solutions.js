@@ -479,6 +479,58 @@ $0.textContent.split('\n\n').filter(x => x !== '')
 /////////////////////////////////////////////
 // https://adventofcode.com/2022/day/9/input
 
+$0.textContent.split('\n').filter(x => x !== '')
+    .map(x => ({dir: x.split(' ')[0], moves: Number(x.split(' ')[1])}))
+    .reduce((acc, item, index) => {
+        // inc initial position
+        if(index === 0) {
+            acc.data.add(`${acc.tail.y}-${acc.tail.x}`, 1);
+        }
+
+        // Update head & tail positions
+        const head = {x: acc.head.x, y: acc.head.y};
+        const tail = {x: acc.tail.x, y: acc.tail.y};
+        
+        const isAdjacent = (a, b) => b.x >= a.x-1 && b.x <= a.x+1 && b.y >= a.y-1 && b.y <= a.y+1;
+        
+        for(let i = 0; i < item.moves; i++) {
+            switch(item.dir) {
+                case 'U': head.y--; break;
+                case 'R': head.x++; break;
+                case 'D': head.y++; break;
+                case 'L': head.x--; break;
+            }
+            if(!isAdjacent(head, tail)) {
+                switch(true) {
+                    case tail.x === head.x: // Same column
+                        tail.y = (tail.y > head.y) ? tail.y-1 : tail.y+1;
+                        break;
+                    case tail.y === head.y: // Same line
+                        tail.x = (tail.x > head.x) ? tail.x-1 : tail.x+1;
+                        break;
+                    default:
+                        tail.x = (tail.x > head.x) ? tail.x-1 : tail.x+1;
+                        tail.y = (tail.y > head.y) ? tail.y-1 : tail.y+1;
+                        break;
+                }
+                acc.data.add(`${tail.y}-${tail.x}`, 1);
+            }
+        }
+
+        // Update data
+        acc.head = head;
+        acc.tail = tail;
+        
+        return acc;
+    }, {
+        data: new Set(),
+        head: {x: 0, y: 4},
+        tail: {x: 0, y: 4},
+    })
+    .data.size
+
+// > 5874
+
 /////////
 // step2
 
