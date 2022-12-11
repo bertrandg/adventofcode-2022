@@ -720,32 +720,15 @@ $0.textContent.split('\n\n').filter(x => x !== '')
 // > 56595
 
 /////////
-// step2
+// step2 > Found solution online for LCM stuff, BigInt was bad idea !
 
 $0.textContent.split('\n\n').filter(x => x !== '')
     .map(x => x.split('\n').filter(x => x !== ''))
     .map(x => ({
         num: Number(x[0].substr(7, 1)),
-        items: x[1].replace('  Starting items: ', '').split(', ').map(BigInt),
-        operation: (input) => {
-            const operation = x[2].replace('  Operation: new = ', '');
-            const operator = operation.split(' ')[1];
-            const secondValue = operation.split(' ')[2];
-            const isSecondValueInput = secondValue === 'old';
-
-            if(isSecondValueInput) {
-                switch(operator) {
-                    case '*': return input*input;
-                    case '+': return input+input;
-                }
-            }
-
-            switch(operator) {
-                case '*': return input*BigInt(secondValue);
-                case '+': return input+BigInt(secondValue);
-            }
-        },
-        test: (input) => !Boolean(input % BigInt(x[3].replace('  Test: divisible by ', ''))),
+        items: x[1].replace('  Starting items: ', '').split(', ').map(Number),
+        operation: (input) => eval(x[2].replace('  Operation: new = ', '').replaceAll('old', input)),
+        divisibleBy: Number(x[3].replace('  Test: divisible by ', '')),
         gotoIfTrue: Number(x[4].replace('    If true: throw to monkey ', '')),
         gotoIfFalse: Number(x[5].replace('    If false: throw to monkey ', '')),
         nbInspectedItems: 0,
@@ -755,6 +738,16 @@ $0.textContent.split('\n\n').filter(x => x !== '')
 
         // All monkeys here, process rounds
         if(acc.monkeys.length === 8) {
+            const getLCM = (divisors) => {
+                const gcd = (a, b) => (b === 0 ? a : gcd(b, a % b));
+                let lcm = 1;
+                for (const divisor of divisors) {
+                    lcm = (lcm * divisor) / gcd(lcm, divisor);
+                }
+                return lcm;
+            };
+            const lcm = getLCM(acc.monkeys.map(m => m.divisibleBy));
+            
             for(let i = 0; i < 10_000; i++) {
                 acc.round++;
                 
@@ -762,9 +755,10 @@ $0.textContent.split('\n\n').filter(x => x !== '')
                     while(monkey.items.length > 0) {
                         const itemValue = monkey.items.shift();
                         const itemNewValue = monkey.operation(itemValue);
-                        const testResult = monkey.test(itemNewValue);
-                        const destinationMonkey = acc.monkeys[testResult ? monkey.gotoIfTrue : monkey.gotoIfFalse];
-                        destinationMonkey.items.push(itemNewValue);
+                        const worryLevel = itemNewValue % lcm;
+                        const isDivisibleBy = worryLevel % monkey.divisibleBy === 0;
+                        const destinationMonkey = acc.monkeys[isDivisibleBy ? monkey.gotoIfTrue : monkey.gotoIfFalse];
+                        destinationMonkey.items.push(worryLevel);
                         monkey.nbInspectedItems++;
                     }
                 });
@@ -782,7 +776,7 @@ $0.textContent.split('\n\n').filter(x => x !== '')
     .filter((x, i) => i < 2)
     .reduce((acc, x) => acc*x, 1)
 
-// 😿 Uncaught RangeError: Maximum BigInt size exceeded
+// > 15693274740
 
 /////////////////////////////////////////////
 // https://adventofcode.com/2022/day/12/input
