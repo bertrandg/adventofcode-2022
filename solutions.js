@@ -582,9 +582,116 @@ $0.textContent.split('\n').filter(x => x !== '')
 /////////////////////////////////////////////
 // https://adventofcode.com/2022/day/10/input
 
+$0.textContent.split('\n').filter(x => x !== '')
+    .reduce((acc, cmd, index) => {
+        if(cmd.startsWith('addx')) {
+            const value = Number(cmd.split(' ')[1]);
+            
+            acc.cycleNum++;
+            acc.cycles.push({cmd: 'addx (start cycle)', value, cycleNum: acc.cycleNum, duringCycleX: acc.X, afterCycleX: acc.X});
+            
+            acc.cycleNum++;
+            const duringX = acc.X;
+            acc.X += value;
+            acc.cycles.push({cmd: 'addx (end cycle)', value, cycleNum: acc.cycleNum, duringCycleX: duringX, afterCycleX: acc.X});
+        }
+        else if(cmd === 'noop') {
+            acc.cycleNum++;
+            acc.cycles.push({cmd: 'noop', cycleNum: acc.cycleNum, duringCycleX: acc.X, afterCycleX: acc.X});
+        }
+        
+        return acc;
+    }, {
+        cycleNum: 0,
+        cycles: [],
+        X: 1,
+    })
+    .cycles
+    .filter(c => [20, 60, 100, 140, 180, 220].includes(c.cycleNum))
+    .map(c => c.cycleNum * c.duringCycleX)
+    .reduce((acc, v) => acc+v, 0)
+
+// > 16880
+
+/////////
+// step2
+
+$0.textContent.split('\n').filter(x => x !== '')
+    .reduce((acc, cmd, index) => {
+        if(cmd.startsWith('addx')) {
+            const value = Number(cmd.split(' ')[1]);
+            
+            acc.cycleNum++;
+            acc.cycles.push({cmd: 'addx (start cycle)', value, cycleNum: acc.cycleNum, duringCycleX: acc.X, afterCycleX: acc.X});
+            
+            acc.cycleNum++;
+            const duringX = acc.X;
+            acc.X += value;
+            acc.cycles.push({cmd: 'addx (end cycle)', value, cycleNum: acc.cycleNum, duringCycleX: duringX, afterCycleX: acc.X});
+        }
+        else if(cmd === 'noop') {
+            acc.cycleNum++;
+            acc.cycles.push({cmd: 'noop', cycleNum: acc.cycleNum, duringCycleX: acc.X, afterCycleX: acc.X});
+        }
+        
+        return acc;
+    }, {
+        cycleNum: 0,
+        cycles: [],
+        X: 1,
+    })
+    .cycles
+    .reduce((acc, cycle, index) => {
+        if(index === 0 || acc[acc.length-1].length === 40) {
+            acc.push([]);
+        }
+        acc[acc.length-1].push(cycle);
+
+        return acc;
+    }, [])
+    .map(cycles => {
+        const line = cycles.map((cycle, index) => {
+            const pixelPosition = index;
+            const isSpriteActiveOnThisPixel = pixelPosition >= cycle.duringCycleX-1 && pixelPosition <= cycle.duringCycleX+1;
+            
+            return isSpriteActiveOnThisPixel ? '#' : '.';
+        }).join('');
+
+        console.log(line);
+        return line;
+    })
+
+// > ###..#..#..##..####..##....##.###..###..
+// > #..#.#.#..#..#....#.#..#....#.#..#.#..#.
+// > #..#.##...#..#...#..#..#....#.###..#..#.
+// > ###..#.#..####..#...####....#.#..#.###..
+// > #.#..#.#..#..#.#....#..#.#..#.#..#.#.#..
+// > #..#.#..#.#..#.####.#..#..##..###..#..#.
+
+// > RKAZAJBR
+
+/////////////////////////////////////////////
+// https://adventofcode.com/2022/day/11/input
+
 /////////
 // step2
 
 
 
+
+
+/////////////////////////////////////////////
+// https://adventofcode.com/2022/day/12/input
+
+/////////
+// step2
+
+
+
+
+/////////////////////////////////////////////
+// https://adventofcode.com/2022/day/13/input
+
+/////////
+// step2
 
