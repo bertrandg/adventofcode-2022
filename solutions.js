@@ -722,9 +722,67 @@ $0.textContent.split('\n\n').filter(x => x !== '')
 /////////
 // step2
 
+$0.textContent.split('\n\n').filter(x => x !== '')
+    .map(x => x.split('\n').filter(x => x !== ''))
+    .map(x => ({
+        num: Number(x[0].substr(7, 1)),
+        items: x[1].replace('  Starting items: ', '').split(', ').map(BigInt),
+        operation: (input) => {
+            const operation = x[2].replace('  Operation: new = ', '');
+            const operator = operation.split(' ')[1];
+            const secondValue = operation.split(' ')[2];
+            const isSecondValueInput = secondValue === 'old';
 
+            if(isSecondValueInput) {
+                switch(operator) {
+                    case '*': return input*input;
+                    case '+': return input+input;
+                }
+            }
 
+            switch(operator) {
+                case '*': return input*BigInt(secondValue);
+                case '+': return input+BigInt(secondValue);
+            }
+        },
+        test: (input) => !Boolean(input % BigInt(x[3].replace('  Test: divisible by ', ''))),
+        gotoIfTrue: Number(x[4].replace('    If true: throw to monkey ', '')),
+        gotoIfFalse: Number(x[5].replace('    If false: throw to monkey ', '')),
+        nbInspectedItems: 0,
+    }))
+    .reduce((acc, m) => {
+        acc.monkeys.push(m);
 
+        // All monkeys here, process rounds
+        if(acc.monkeys.length === 8) {
+            for(let i = 0; i < 10_000; i++) {
+                acc.round++;
+                
+                acc.monkeys.forEach(monkey => {
+                    while(monkey.items.length > 0) {
+                        const itemValue = monkey.items.shift();
+                        const itemNewValue = monkey.operation(itemValue);
+                        const testResult = monkey.test(itemNewValue);
+                        const destinationMonkey = acc.monkeys[testResult ? monkey.gotoIfTrue : monkey.gotoIfFalse];
+                        destinationMonkey.items.push(itemNewValue);
+                        monkey.nbInspectedItems++;
+                    }
+                });
+            }
+        }
+        
+        return acc;
+    }, {
+        monkeys: [], 
+        round: 0
+    })
+    .monkeys
+    .map(m => m.nbInspectedItems)
+    .sort((a, b) => b-a)
+    .filter((x, i) => i < 2)
+    .reduce((acc, x) => acc*x, 1)
+
+// 😿 Uncaught RangeError: Maximum BigInt size exceeded
 
 /////////////////////////////////////////////
 // https://adventofcode.com/2022/day/12/input
