@@ -673,6 +673,52 @@ $0.textContent.split('\n').filter(x => x !== '')
 /////////////////////////////////////////////
 // https://adventofcode.com/2022/day/11/input
 
+$0.textContent.split('\n\n').filter(x => x !== '')
+    .map(x => x.split('\n').filter(x => x !== ''))
+    .map(x => ({
+        num: Number(x[0].substr(7, 1)),
+        items: x[1].replace('  Starting items: ', '').split(', ').map(Number),
+        operation: (input) => eval(x[2].replace('  Operation: new = ', '').replaceAll('old', input)),
+        test: (input) => Boolean(input % Number(x[3].replace('  Test: divisible by ', '')) === 0),
+        gotoIfTrue: Number(x[4].replace('    If true: throw to monkey ', '')),
+        gotoIfFalse: Number(x[5].replace('    If false: throw to monkey ', '')),
+        nbInspectedItems: 0,
+    }))
+    .reduce((acc, m) => {
+        acc.monkeys.push(m);
+
+        // All monkeys here, process rounds
+        if(acc.monkeys.length === 8) {
+            for(let i = 0; i < 20; i++) {
+                acc.round++;
+                
+                acc.monkeys.forEach(monkey => {
+                    while(monkey.items.length > 0) {
+                        const itemValue = monkey.items.shift();
+                        const itemNewValue = monkey.operation(itemValue);
+                        const itemDividedValue = Math.floor(itemNewValue / 3);
+                        const testResult = monkey.test(itemDividedValue);
+                        const destinationMonkey = acc.monkeys[testResult ? monkey.gotoIfTrue : monkey.gotoIfFalse];
+                        destinationMonkey.items.push(itemDividedValue);
+                        monkey.nbInspectedItems++;
+                    }
+                });
+            }
+        }
+        
+        return acc;
+    }, {
+        monkeys: [], 
+        round: 0
+    })
+    .monkeys
+    .map(m => m.nbInspectedItems)
+    .sort((a, b) => b-a)
+    .filter((x, i) => i < 2)
+    .reduce((acc, x) => acc*x, 1)
+
+// > 56595
+
 /////////
 // step2
 
