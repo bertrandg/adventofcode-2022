@@ -781,6 +781,46 @@ $0.textContent.split('\n\n').filter(x => x !== '')
 /////////////////////////////////////////////
 // https://adventofcode.com/2022/day/12/input
 
+//WIP
+
+$0.textContent.split('\n').filter(x => x !== '')
+    .map(line => line.split(''))
+    .reduce((acc, line) => {
+        acc.area.push(line);
+
+        if(acc.area.length === 41) {
+            const getValue = (x, y) => {
+                if(x < 0 || x > 92 || y < 0 || y > 40) {
+                    return 30;
+                }
+                const letter = acc.area[y][x];
+                return 'abcdefghijklmnopqrstuvwxyz'.split('').findIndex(l => l === letter) + 1;
+            };
+            
+            const getPathsFrom = (p, from) => {
+                let paths = [];
+                const up =    {x: p.x,   y: p.y-1, v: getValue(p.x, p.y-1), path: p.path+'U'};
+                const down =  {x: p.x,   y: p.y+1, v: getValue(p.x, p.y+1), path: p.path+'D'};
+                const left =  {x: p.x-1, y: p.y,   v: getValue(p.x-1, p.y), path: p.path+'L'};
+                const right = {x: p.x+1, y: p.y,   v: getValue(p.x+1, p.y), path: p.path+'R'};
+
+                // need check if inside area + not coming from position + value not more than +1
+                [up, down, left, right].forEach(dir => {
+                    if(!from || dir.x !== from.x || dir.y !== from.y) {
+                        if(dir.v <= p.v + 1) {
+                            paths = [...paths, ...getPathsFrom(dir, p)];
+                        }
+                    }
+                });
+                return paths;
+            }
+
+            acc.paths = getPathsFrom({x: 0, y: 0, v: 1}, null);
+        }
+        
+        return acc;
+    }, {area: [], paths: []})
+
 /////////
 // step2
 
